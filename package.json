@@ -1,0 +1,55 @@
+{
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "build": "npm run build:css && remix build",
+    "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
+    "dev": "concurrently \"npm run dev:css\" \"remix dev\"",
+    "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
+    "start": "remix-serve build"
+  },
+  "dependencies": {
+    "@date-io/jalaali": "^2.16.0",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@heroicons/react": "^2.0.11",
+    "@mui/icons-material": "^5.10.6",
+    "@mui/material": "^5.10.7",
+    "@mui/x-date-pickers": "^5.0.3",
+    "@prisma/client": "^4.4.0",
+    "@remix-run/node": "^1.7.1",
+    "@remix-run/react": "^1.7.1",
+    "@remix-run/serve": "^1.7.1",
+    "babel-plugin-macros": "^3.1.0",
+    "bcrypt": "^5.0.1",
+    "dayjs": "^1.11.5",
+    "flowbite": "^1.5.3",
+    "flowbite-datepicker": "^1.2.2",
+    "flowbite-react": "^0.1.11",
+    "moment": "^2.29.4",
+    "moment-jalaali": "^0.9.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.7.1",
+    "@remix-run/eslint-config": "^1.7.1",
+    "@types/bcrypt": "^5.0.0",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "autoprefixer": "^10.4.11",
+    "concurrently": "^7.4.0",
+    "eslint": "^8.20.0",
+    "postcss": "^8.4.16",
+    "prisma": "^4.4.0",
+    "tailwindcss": "^3.1.8",
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

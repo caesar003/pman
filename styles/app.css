@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.task-button-group {
+    background-color: antiquewhite;
+    padding: 0 12px;
+}
+
+.todo {
+    color: #64748b;
+}
+.ongoing {
+    color: #76a9fa;
+}
+
+.done {
+    color: #84cc16;
+}
+
+.prior {
+    padding: 0.125rem;
+    border-radius: 0.25rem;
+    border: 0.3px solid darkgrey;
+}
+.prior-high {
+    color: #bb0000;
+    background-color: azure;
+}
+
+.prior-medium {
+    color: #e67e22;
+}
+
+.prior-low {
+    background-color: darkgrey;
+    color: #fffa37;
+}

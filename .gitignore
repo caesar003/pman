@@ -1,0 +1,8 @@
+node_modules
+
+/.cache
+/build
+/public/build
+*.txt
+/prisma/dev.db
+/prisma/seed.js
