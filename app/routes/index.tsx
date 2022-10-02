@@ -29,6 +29,7 @@ const {timelineConstuctor, formatDate} = helpers;
 
 export const loader = async ({request}) => {
     const user = await getUser(request);
+    if (!user) return redirect('auth/signin');
     const data = {
         projects: await db.project.findMany({
             include: {
@@ -46,7 +47,6 @@ export const loader = async ({request}) => {
         }),
     };
     // console.log(data);
-    if (!user) return redirect('auth/signin');
     return data;
 };
 
