@@ -452,28 +452,28 @@ export default function ProjectId() {
                 document.removeEventListener('touchstart', listener);
             };
         }
-        if (state.updateTaskDueShown) {
-            const listener = (event) => {
-                if (
-                    !dueFormRef.current ||
-                    dueFormRef.current.contains(event.target)
-                ) {
-                    return;
-                }
+        // if (state.updateTaskDueShown) {
+        //     const listener = (event) => {
+        //         if (
+        //             !dueFormRef.current ||
+        //             dueFormRef.current.contains(event.target)
+        //         ) {
+        //             return;
+        //         }
 
-                dispatch({
-                    type: 'showUpdateTaskDue',
-                    id: null,
-                });
-            };
-            document.addEventListener('mousedown', listener);
-            document.addEventListener('touchstart', listener);
+        //         dispatch({
+        //             type: 'showUpdateTaskDue',
+        //             id: null,
+        //         });
+        //     };
+        //     document.addEventListener('mousedown', listener);
+        //     document.addEventListener('touchstart', listener);
 
-            return () => {
-                document.removeEventListener('mousedown', listener);
-                document.removeEventListener('touchstart', listener);
-            };
-        }
+        //     return () => {
+        //         document.removeEventListener('mousedown', listener);
+        //         document.removeEventListener('touchstart', listener);
+        //     };
+        // }
     }, [isSubmitting, state]);
     return (
         <>
