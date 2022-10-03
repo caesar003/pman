@@ -28,7 +28,7 @@ export const loader = async ({request}) => {
     if (user) return redirect('/');
     return null;
 };
-const validdateForm = (fields: Fields) => {
+const validateForm = (fields: Fields) => {
     const {signinType, username, email, password, password1} = fields;
     const emailFilter =
         /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -78,7 +78,7 @@ export const action = async ({request}) => {
         email,
         password1,
     };
-    const fieldErrors = validdateForm(fields);
+    const fieldErrors = validateForm(fields);
 
     if (Object.values(fieldErrors).some(Boolean))
         return badRequest({fieldErrors, fields});

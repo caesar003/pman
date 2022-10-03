@@ -1,4 +1,4 @@
-import type {MetaFunction} from '@remix-run/node';
+import type {LoaderFunction, MetaFunction} from '@remix-run/node';
 import styles from './styles/app.css';
 import {
     Link,
@@ -15,6 +15,7 @@ import {faList12} from '@fortawesome/free-solid-svg-icons';
 import {Navbar, Dropdown, Avatar, Badge} from 'flowbite-react';
 import {getUser} from './utils/session.server';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {ReactNode} from 'react';
 
 export const meta: MetaFunction = () => ({
     charset: 'utf-8',
@@ -26,7 +27,7 @@ export const links = () => {
     return [{rel: 'stylesheet', href: styles}];
 };
 
-export const loader = async ({request}) => {
+export const loader: LoaderFunction = async ({request}) => {
     const user = await getUser(request);
     const data = {user};
     return data;
@@ -42,7 +43,7 @@ export default function App() {
     );
 }
 
-function Document({children}) {
+function Document({children}: {children: ReactNode}) {
     return (
         <html lang='en-us'>
             <head>
@@ -59,7 +60,7 @@ function Document({children}) {
     );
 }
 
-function Layout({children}) {
+function Layout({children}: {children: ReactNode}) {
     const {user} = useLoaderData();
     const currentRoute = useLocation().pathname;
     return (

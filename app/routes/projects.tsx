@@ -17,9 +17,10 @@ import {
 import {db} from '~/utils/db.server';
 import React, {useState} from 'react';
 import {getUser} from '~/utils/session.server';
-import {json, redirect} from '@remix-run/node';
+import {ActionFunction, json, LoaderFunction, redirect} from '@remix-run/node';
+import {Project, Log} from '@prisma/client';
 
-export const loader = async ({request}) => {
+export const loader: LoaderFunction = async ({request}) => {
     const user = await getUser(request);
     if (!user) return redirect('auth/signin');
 
@@ -66,14 +67,17 @@ const validateForm = ({name, description}) => {
 };
 
 const badRequest = (data) => json(data, {status: 400});
-export const action = async ({request}) => {
+export const action: ActionFunction = async ({request}) => {
     const {id: userId} = await getUser(request);
     const formData = await request.formData();
     const name = formData.get('name');
     const description = formData.get('description');
     const isPrivate = formData.get('isPrivate');
 
-    const fields = {
+    const fields: {
+        name: FormDataEntryValue | null;
+        description: FormDataEntryValue | null;
+    } = {
         name,
         description,
     };
@@ -89,7 +93,7 @@ export const action = async ({request}) => {
 
     const project = await db.project.create({data: fields});
 
-    const log = {
+    const log: Log = {
         projectId: project.id,
         activity: 'create project',
         userId,
@@ -160,7 +164,7 @@ export default function IndexRoute() {
                 {/* <Button onClick={() => showModal(true)}>Create New</Button> */}
             </div>
             <div className='grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'>
-                {projects.map((project) => (
+                {projects.map((project: Project) => (
                     <div
                         key={project.id}
                         className='rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 p-3'

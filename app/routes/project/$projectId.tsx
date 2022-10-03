@@ -25,10 +25,11 @@ import {
 
 import helpers from '~/utils/helpers';
 import PriorityButtons from '~/components/PriorityButtons';
-import TaskStatusButtons from '~/components/TaskStatusButtons';
 import RenameTaskForm from '~/components/RenameTaskForm';
 import NewTaskForm from '~/components/NewTaskForm';
 import DatePicker from '~/components/DatePicker';
+import TaskStatus from '~/components/TaskStatus';
+import DropdownButtons from '~/components/DropdownButtons';
 const {taskStatus, taskPriorities, formatDate, isValidDate, csvDataGenerator} =
     helpers;
 
@@ -496,34 +497,53 @@ export default function ProjectId() {
                             >
                                 <div className='col-span-7 flex justify-start'>
                                     {/* TASK STATUS BUTTON */}
-                                    <div className='mx-1 px-1 relative'>
-                                        <button
-                                            title={`Status: ${task.status}`}
-                                            onClick={() =>
-                                                dispatch({
-                                                    type: 'showTaskStatusButtons',
-                                                    id: task.id,
-                                                })
-                                            }
-                                            className={`mx-1  py-0.5 ${task.status}`}
-                                        >
-                                            <FontAwesomeIcon icon={faSquare} />
-                                        </button>
-                                        {state.taskStatusButtonsShown &&
-                                            state.ids.update === task.id && (
-                                                <TaskStatusButtons
-                                                    Ref={taskButtonRef}
-                                                    taskStatus={taskStatus}
-                                                    inputInfo={{
-                                                        obKey: 'status',
-                                                        taskId: task.id,
-                                                        projectId: id,
-                                                        userId: userId,
-                                                        prevValue: task.status,
-                                                    }}
-                                                />
-                                            )}
-                                    </div>
+                                    {/* <TaskStatus
+                                        params={{
+                                            task,
+                                            taskStatus,
+                                            obKey: 'status',
+                                            taskId: task.id,
+                                            projectId: id,
+                                            userId,
+                                            prevValue: task.status,
+                                            Ref: taskButtonRef,
+                                            compState:
+                                                state.taskStatusButtonsShown &&
+                                                state.ids.update === task.id,
+                                            fn: dispatch,
+                                            fnPar: {
+                                                type: 'showTaskStatusButtons',
+                                                id: task.id,
+                                            },
+                                        }}
+                                    /> */}
+                                    <DropdownButtons
+                                        params={{
+                                            icon: faSquare,
+                                            fn: dispatch,
+                                            fnPar: {
+                                                type: 'showTaskStatusButtons',
+                                                id: task.id,
+                                            },
+                                            Ref: taskButtonRef,
+                                            obKey: 'status',
+                                            projectId: id,
+                                            prevValue: task.status,
+                                            userId,
+                                            task,
+                                            compState:
+                                                state.taskStatusButtonsShown &&
+                                                state.ids.update === task.id,
+                                            classes: {
+                                                buttonTrigger: `py-0.5 mx-1 ${task.status}`,
+                                                buttonsContainer:
+                                                    'status-buttons-container',
+                                                buttons: '',
+                                            },
+                                            items: taskStatus,
+                                        }}
+                                    />
+                                    {/* RENAME TASK FORM */}
                                     <div className=''>
                                         {!(
                                             state.taskRenameInputShown &&
@@ -564,39 +584,29 @@ export default function ProjectId() {
                                             {formatDate(task.createdAt)}
                                         </p>
                                         <p className='text-sm px-2'>
-                                            {formatDate(task.due) ? (
-                                                <>
-                                                    <button
-                                                        onClick={() =>
-                                                            dispatch({
-                                                                type: 'showUpdateTaskDue',
-                                                                id: task.id,
-                                                            })
-                                                        }
-                                                        className='hover:text-gray-500 text-left'
-                                                    >
+                                            <button
+                                                onClick={() =>
+                                                    dispatch({
+                                                        type: 'showUpdateTaskDue',
+                                                        id: task.id,
+                                                    })
+                                                }
+                                                className='hover:text-gray-500 text-left'
+                                            >
+                                                {formatDate(task.due) ? (
+                                                    <>
                                                         <span
                                                             title='Due, click to change'
                                                             className='font-bold'
                                                         >
                                                             Due:{' '}
                                                         </span>
-                                                        {formatDate(task.due)}{' '}
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <button
-                                                    onClick={() =>
-                                                        dispatch({
-                                                            type: 'showUpdateTaskDue',
-                                                            id: task.id,
-                                                        })
-                                                    }
-                                                    className='hover:text-gray-500 text-left'
-                                                >
-                                                    Set due date
-                                                </button>
-                                            )}
+                                                        {formatDate(task.due)}
+                                                    </>
+                                                ) : (
+                                                    <span>Set due date</span>
+                                                )}
+                                            </button>
                                         </p>
                                         <div className='relative'>
                                             {state.updateTaskDueShown &&
@@ -690,7 +700,33 @@ export default function ProjectId() {
                                             />
                                         </button>
                                     </div>
-                                    <div className='mr-2 ml-1 px-1 relative'>
+                                    <DropdownButtons
+                                        params={{
+                                            icon: faFlag,
+                                            fn: dispatch,
+                                            fnPar: {
+                                                type: 'showTaskPriorityButtons',
+                                                id: task.id,
+                                            },
+                                            Ref: taskPriorityButtonRef,
+                                            obKey: 'priority',
+                                            projectId: id,
+                                            prevValue: task.priority,
+                                            userId,
+                                            task,
+                                            compState:
+                                                state.taskPriorityButtonsShown &&
+                                                state.ids.update === task.id,
+                                            classes: {
+                                                buttonTrigger: `py-0.5 prior ${task.priority}`,
+                                                buttonsContainer:
+                                                    'priority-buttons-container',
+                                                buttons: 'prior',
+                                            },
+                                            items: taskPriorities,
+                                        }}
+                                    />
+                                    {/* <div className='mr-2 ml-1 px-1 relative'>
                                         <button
                                             title={`Priority ${task.priority}`}
                                             className={`prior prior-${task.priority} py-0.5`}
@@ -719,7 +755,7 @@ export default function ProjectId() {
                                                     }}
                                                 />
                                             )}
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         ))}

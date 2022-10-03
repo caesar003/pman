@@ -23,16 +23,29 @@
     border-radius: 0.25rem;
     border: 0.3px solid darkgrey;
 }
-.prior-high {
+.high {
     color: #bb0000;
     background-color: azure;
 }
 
-.prior-medium {
+.medium {
     color: #e67e22;
 }
 
-.prior-low {
+.low {
     background-color: darkgrey;
     color: #fffa37;
+}
+.priority-buttons-container {
+    position: absolute;
+    inset: 0px auto auto 0px;
+    margin: 0;
+    left: -160px;
+    top: 30px;
+}
+.status-buttons-container {
+     position: absolute;
+    inset: 0px auto auto 0px;
+    margin: 0;
+    transform: translate(0px, 20px);
 }

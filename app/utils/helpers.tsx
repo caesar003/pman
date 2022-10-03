@@ -1,17 +1,17 @@
 const helpers = {
     taskStatus: [
-        {status: 'todo', color: '#64748B'},
-        {status: 'ongoing', color: '#76A9FA'},
-        {status: 'done', color: '#84CC16'},
+        {elClass: 'todo', color: '#64748B'},
+        {elClass: 'ongoing', color: '#76A9FA'},
+        {elClass: 'done', color: '#84CC16'},
     ],
     taskPriorities: [
-        {prior: 'low', color: 'grey'},
-        {prior: 'medium', color: 'orange'},
-        {prior: 'high', color: 'red'},
+        {elClass: 'low', color: 'grey'},
+        {elClass: 'medium', color: 'orange'},
+        {elClass: 'high', color: 'red'},
     ],
     updateTitles: [],
 
-    capitalize: (str) => `${str[0].toUpperCase()}${str.slice(1)}`,
+    capitalize: (str: string) => `${str[0].toUpperCase()}${str.slice(1)}`,
     timelineConstuctor: ({projects, logs, formatDate}) => {
         const res = [];
         for (let i = 0; i < logs.length; i++) {
