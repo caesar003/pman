@@ -1,3 +1,4 @@
+import { LoaderFunction, ActionFunction } from '@remix-run/node';
 import {
     Form,
     Link,
@@ -18,8 +19,9 @@ import {db} from '~/utils/db.server';
 import React, {useState} from 'react';
 import {getUser} from '~/utils/session.server';
 import {json, redirect} from '@remix-run/node';
+import type { Project, Task, Log } from '~/utils/types';
 
-export const loader = async ({request}) => {
+export const loader:LoaderFunction = async ({request}) => {
     const user = await getUser(request);
     if (!user) return redirect('auth/signin');
 
@@ -41,7 +43,7 @@ const inputClasses = {
     invalid:
         'block p-4  w-full text-sm text-red-900 bg-red-50 rounded-lg border border-red-500 focus:ring-red-500 focus:border-red-500 dark:bg-red-700 dark:border-red-600 dark:placeholder-red-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500',
 };
-const validateForm = ({name, description}) => {
+const validateForm = ({name, description}:{name:string, description: string}) => {
     // return null;
 
     const obj = {
@@ -66,7 +68,7 @@ const validateForm = ({name, description}) => {
 };
 
 const badRequest = (data) => json(data, {status: 400});
-export const action = async ({request}) => {
+export const action:ActionFunction = async ({request}) => {
     const {id: userId} = await getUser(request);
     const formData = await request.formData();
     const name = formData.get('name');
@@ -88,7 +90,7 @@ export const action = async ({request}) => {
     fields.isPrivate = !!isPrivate;
 
     const project = await db.project.create({data: fields});
-
+    
     const log = {
         projectId: project.id,
         activity: 'create project',
@@ -160,7 +162,7 @@ export default function IndexRoute() {
                 {/* <Button onClick={() => showModal(true)}>Create New</Button> */}
             </div>
             <div className='grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'>
-                {projects.map((project) => (
+                {projects.map((project: Project) => (
                     <div
                         key={project.id}
                         className='rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 p-3'

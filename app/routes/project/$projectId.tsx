@@ -9,6 +9,8 @@ import {
 } from '@remix-run/react';
 import {Alert, Button, Modal} from 'flowbite-react';
 
+import type { LoaderFunction, ActionFunction } from '@remix-run/node';
+import type { Project, Task, Log } from '~/utils/types';
 import React, {useEffect, useReducer, useRef, useState} from 'react';
 import {db} from '~/utils/db.server';
 import {getUser} from '~/utils/session.server';
@@ -23,16 +25,14 @@ import {
     faFileCsv,
 } from '@fortawesome/free-solid-svg-icons';
 
-import helpers from '~/utils/helpers';
+import { taskStatus, taskPriorities, formatDate, isValidDate, csvDataGenerator } from '~/utils/helpers';
 import PriorityButtons from '~/components/PriorityButtons';
 import TaskStatusButtons from '~/components/TaskStatusButtons';
 import RenameTaskForm from '~/components/RenameTaskForm';
 import NewTaskForm from '~/components/NewTaskForm';
 import DatePicker from '~/components/DatePicker';
-const {taskStatus, taskPriorities, formatDate, isValidDate, csvDataGenerator} =
-    helpers;
 
-export const loader = async ({params, request}) => {
+export const loader: LoaderFunction = async ({params, request}) => {
     const user = await getUser(request);
     if (!user) return redirect('/auth/signin');
     const {projectId} = params;
@@ -54,7 +54,7 @@ export const loader = async ({params, request}) => {
 
 const badRequest = (data) => json(data, {status: 400});
 
-export const action = async ({request}) => {
+export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
 
     const userId = form.get('userId');
@@ -487,7 +487,7 @@ export default function ProjectId() {
                 </div>
                 <div className='col-span-8 '>
                     <div id='taskContainer'>
-                        {tasks.map((task, idx) => (
+                        {tasks.map((task: Task, idx:number) => (
                             <div
                                 key={task.id}
                                 className={`grid grid-cols-12 gap-4 mb-2 ${

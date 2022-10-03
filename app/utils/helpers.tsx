@@ -1,128 +1,46 @@
-const helpers = {
-    taskStatus: [
-        {status: 'todo', color: '#64748B'},
-        {status: 'ongoing', color: '#76A9FA'},
-        {status: 'done', color: '#84CC16'},
-    ],
-    taskPriorities: [
-        {prior: 'low', color: 'grey'},
-        {prior: 'medium', color: 'orange'},
-        {prior: 'high', color: 'red'},
-    ],
-    updateTitles: [],
+import type { Project, Task, Log } from "./types";
+export const isValidDate = (d: string): boolean => !!Date.parse(d);
 
-    capitalize: (str) => `${str[0].toUpperCase()}${str.slice(1)}`,
-    timelineConstuctor: ({projects, logs, formatDate}) => {
-        const res = [];
-        for (let i = 0; i < logs.length; i++) {
-            const obj = {
-                title: '',
-                link: '',
-                date: formatDate(logs[i].createdAt),
-                id: logs[i].id,
-                projectId: null,
-                name: '',
-            };
-            switch (logs[i].activity) {
-                case 'create project': {
-                    const project = projects.find(
-                        (m) => m.id === logs[i].projectId,
-                    );
-                    obj.title = `You created ${project.name} project`;
-                    obj.projectId = project.id;
-                    break;
-                }
-                // case 'delete project': {
-                // }
-                // case 'rename project': {
-                // }
-                // case 'change project description': {
-                // }
-                case 'create task': {
-                    obj.title = 'You created a task';
-                    break;
-                }
-                // case 'update task': {
-                //     obj.title = 'You update a task';
-                //     break;
-                // }
-                case 'delete task': {
-                    // return 'deleting a task';
-                }
-                case 'rename task': {
-                    obj.title = 'You rename a task';
-                    break;
-                }
-                case 'set due': {
-                    obj.title = 'You set due date';
-                    break;
-                }
-                case 'change status': {
-                    obj.title = 'You update task status';
-                    break;
-                }
-                case 'set priority': {
-                    obj.title = 'You set priority to';
-                    break;
-                }
-            }
+export const updateTitles = [];
 
-            res.push(obj);
-        }
+export const capitalize = (str: string) => `${str[0].toUpperCase()}${str.slice(1)}`;
 
-        return res;
-    },
-    getDueDate: (str) => {
-        const defaultDate = '0001-01-01T00:00:00.000Z';
-        const options = {
-            year: 'numeric',
-            month: 'short',
-            day: '2-digit',
-            weekday: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
-        };
+export const taskStatus = [
+    { status: 'todo', color: '#64748B' },
+    { status: 'ongoing', color: '#76A9FA' },
+    { status: 'done', color: '#84CC16' },
+];
 
-        if (new Date(str).getTime() !== new Date(defaultDate).getTime()) {
-            return new Date(str).toLocaleDateString('en-US', options);
-            // return <DayJS>{d}</DayJS>;
-        }
-        return null;
-    },
-    formatDate: (str) => {
-        const defaultDate = '0001-01-01T00:00:00.000Z';
-        const options = {
-            year: 'numeric',
-            month: 'short',
-            day: '2-digit',
-            weekday: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
-        };
+export const taskPriorities = [
+    { prior: 'low', color: 'grey' },
+    { prior: 'medium', color: 'orange' },
+    { prior: 'high', color: 'red' },
+];
 
-        if (new Date(str).getTime() !== new Date(defaultDate).getTime()) {
-            return new Date(str).toLocaleDateString('en-US', options);
-            // return <DayJS>{d}</DayJS>;
-        }
-        return null;
-    },
-    isValidDate: (d) => !!Date.parse(d),
-    validators: {},
-    csvDataGenerator: (project, formatDate) => {
-        const {task} = project;
-        let data = `ID,Name,Created at,Due,Priority,Status,Created by\n`;
+export const formatDate = (str: string): string => {
+    const defaultDate = '0001-01-01T00:00:00.000Z';
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+    } as Intl.DateTimeFormatOptions;
 
-        for (let i = 0; i < task.length; i++) {
-            const {id, name, createdAt, due, priority, status} = task[i];
+    if (new Date(str).getTime() !== new Date(defaultDate).getTime()) {
+        return new Date(str).toLocaleDateString('en-US', options);
+    }
 
-            const row = `"${id}","${name}","${formatDate(createdAt)}","${
-                formatDate(due) || 'not set'
-            }","${priority}","${status}","${project.user.username}"\n`;
+    return "";
+}
 
-            data += row;
-        }
-        return data;
-    },
+export const csvDataGenerator = ({ task, user }: Project, formatDate: Function) => {
+    let header = `id,name,created_at,due,priority,status,created_by`;
+    let body = task.map(({ id, name, createdAt, due, priority, status }) => {
+        return `"${id}","${name}","${formatDate(createdAt)}","${formatDate(due) || 'not set'
+            }","${priority}","${status}","${user.username}"`;
+    }).join("\n")
+
+    return [header, body].join("\n");
 };
-
-export default helpers;

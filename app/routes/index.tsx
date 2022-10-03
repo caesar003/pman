@@ -1,3 +1,4 @@
+import {LoaderFunction, ActionFunction} from '@remix-run/node'
 import {
     Link,
     Outlet,
@@ -14,20 +15,24 @@ import {
     Textarea,
     Timeline,
 } from 'flowbite-react';
-import helpers from '~/utils/helpers';
+import { formatDate } from '~/utils/helpers';
 import {HiCalendar, HiArrowNarrowRight} from 'react-icons/hi';
 import {Form} from '@remix-run/react';
-import {db} from '~/utils/db.server';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, FormEvent} from 'react';
 import {getUser} from '~/utils/session.server';
 import {redirect} from '@remix-run/node';
 import TimelineConstructor from '~/components/TimelineConstructor';
 import {db} from '~/utils/db.server';
 import {ConstructionOutlined} from '@mui/icons-material';
 
-const {timelineConstuctor, formatDate} = helpers;
+import type {Project, Task, Log} from '~/utils/types'
 
-export const loader = async ({request}) => {
+type SearchResult = { 
+    projectId: string, 
+    name: string
+}
+
+export const loader: LoaderFunction = async ({request}) => {
     const user = await getUser(request);
     if (!user) return redirect('auth/signin');
     const data = {
@@ -50,7 +55,7 @@ export const loader = async ({request}) => {
     return data;
 };
 
-export const action = async ({request}) => {
+export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
     const search = form.get('search');
 
@@ -63,14 +68,14 @@ export const action = async ({request}) => {
             // id: search,
 
             name: {
-                contains: search,
+                contains: search as string,
             },
         },
     });
     const tasks = await db.task.findMany({
         where: {
             name: {
-                contains: search,
+                contains: search as string,
             },
         },
     });
@@ -79,8 +84,19 @@ export const action = async ({request}) => {
     // searchResult.projects = projects;
     // if (!projects.length && !tasks.length) return null;
     // return searchResult;
-    return projects.concat(tasks);
+    const projectResult = projects.map<SearchResult>((item) => {
+        return { projectId: item.id, name: item.name}
+    })
+    const taskResult = tasks.map<SearchResult>((item) => {
+        return { projectId: item.projectId, name: item.name }
+    })
+
+    return projectResult.concat(taskResult)
 };
+
+
+
+
 
 export default function IndexRoute() {
     const {projects, logs} = useLoaderData();
@@ -93,17 +109,20 @@ export default function IndexRoute() {
         modifySearchResult(actionData || []);
     }, [actionData]);
     const submitQuery = useSubmit();
-    const handleSearch = (e) => {
+    const handleSearch = (e: FormEvent<HTMLFormElement>) => {
         // passing the value to action function
+        // TODO: Add debounce hook before submit the query ref(https://usehooks.com/useDebounce/)
+        const target = e.target as HTMLInputElement;
         submitQuery(e.currentTarget, {replace: true});
+        const search = target.value;
+        setQuery(search);
+        
         // console.log(e);
-        const search = e.target.value;
         // console.log(search);
         // managing the state
         // if (search) {
         //     setQuery(search);
         // }
-        setQuery(search);
     };
     return (
         <>
@@ -151,7 +170,7 @@ export default function IndexRoute() {
                         {' '}
                         <h1 className='text-[42px] mb-2'>Your Activities</h1>
                         {logs.length ? (
-                            logs.map((log, i) => (
+                            logs.map((log:Log, i:number) => (
                                 <div key={log.id}>
                                     <TimelineConstructor
                                         idx={i}
@@ -159,7 +178,7 @@ export default function IndexRoute() {
                                         project={
                                             log.projectId
                                                 ? projects.find(
-                                                      (m) =>
+                                                      (m:Project) =>
                                                           m.id ===
                                                           log.projectId,
                                                   )

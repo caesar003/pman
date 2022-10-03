@@ -1,10 +1,9 @@
 import {Form} from '@remix-run/react';
 import UpdateInput from './UpdateInput';
-import helpers from '~/utils/helpers';
+import { capitalize } from '~/utils/helpers';
 import {HiFlag} from 'react-icons/hi';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFlag} from '@fortawesome/free-solid-svg-icons';
-const {capitalize} = helpers;
 const PriorityButtons = ({priorities, inputInfo, Ref}) => (
     <div
         ref={Ref}

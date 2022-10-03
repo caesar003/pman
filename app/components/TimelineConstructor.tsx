@@ -1,9 +1,18 @@
 import {Button, Timeline} from 'flowbite-react';
 import {Link} from '@remix-run/react';
 import {HiCalendar, HiArrowNarrowRight} from 'react-icons/hi';
-import helpers from '~/utils/helpers';
-const {formatDate} = helpers;
-export default function TimelineConstructor({log, project, idx}) {
+import type { Project, Task, Log } from '~/utils/types';
+import { formatDate } from '~/utils/helpers';
+import { ReactNode } from 'react';
+
+type TimelineChild = {
+    title: ReactNode,
+    time: string | null,
+    body: ReactNode,
+    link: string,
+}
+
+export default function TimelineConstructor({log, project, idx}: {log: Log, project: Project, idx: number}) {
     const {
         activity,
         createdAt,
@@ -15,9 +24,9 @@ export default function TimelineConstructor({log, project, idx}) {
         userId,
     } = log;
 
-    const obj = {
-        title: null,
-        time: formatDate(createdAt),
+    const obj: TimelineChild = {
+        title: "",
+        time: formatDate(String(createdAt)),
         body: null,
         link: `/project/${projectId}`,
     };
@@ -43,7 +52,7 @@ export default function TimelineConstructor({log, project, idx}) {
             break;
         }
         case 'create task': {
-            const {taskName, projectName} = JSON.parse(log.note);
+            const {taskName, projectName} = JSON.parse(note as string);
             obj.title = (
                 <Timeline.Title>
                     You added new task on <em>{projectName}</em>
@@ -57,7 +66,7 @@ export default function TimelineConstructor({log, project, idx}) {
             break;
         }
         case 'rename task': {
-            const {oldName, newName} = JSON.parse(note);
+            const {oldName, newName} = JSON.parse(note as string);
             obj.title = (
                 <Timeline.Title>
                     You renamed a task on <em>{project.name}</em>
@@ -71,7 +80,7 @@ export default function TimelineConstructor({log, project, idx}) {
             break;
         }
         case 'set due': {
-            const {taskName, due, projectName} = JSON.parse(log.note);
+            const {taskName, due, projectName} = JSON.parse(note as string);
             obj.title = (
                 <Timeline.Title>
                     You set due date for a task on <em>{projectName}</em>
@@ -86,7 +95,7 @@ export default function TimelineConstructor({log, project, idx}) {
             break;
         }
         case 'set priority': {
-            const {priority, taskName, projectName} = JSON.parse(log.note);
+            const {priority, taskName, projectName} = JSON.parse(note as string);
             obj.title = (
                 <Timeline.Title>
                     You changed priority of a task on <em>{projectName}</em>
@@ -102,7 +111,7 @@ export default function TimelineConstructor({log, project, idx}) {
         }
 
         case 'change status': {
-            const {status, taskName, projectName} = JSON.parse(note);
+            const {status, taskName, projectName} = JSON.parse(note as string);
             switch (status) {
                 case 'ongoing':
                     obj.title = (
@@ -138,7 +147,7 @@ export default function TimelineConstructor({log, project, idx}) {
             break;
         }
         case 'delete task': {
-            const {taskName, projectName} = JSON.parse(log.note);
+            const {taskName, projectName} = JSON.parse(note as string);
             obj.title = (
                 <Timeline.Title>
                     You removed a task from <em>{projectName}</em>
